@@ -47,7 +47,7 @@ const EDITABLE_COLUMNS: Column<Meeting>[] = [
 
 export default function Dashboard() {
   const [data, setData] = useState<Meeting[]>([]);
-  const [openMeetings, setOpenMeetings] = useState<Meeting[]>([])
+  const [openMeetings, setOpenMeetings] = useState<Meeting[]>([]);
 
   const [meetingId, setMeetingId] = useState();
   const [code, setCode] = useState();
@@ -56,30 +56,30 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   function handleMeetingIdChange(e: any) {
-    const value = e.target.value
-    setMeetingId(value)
+    const value = e.target.value;
+    setMeetingId(value);
   }
 
   function onSubmit() {
-    (async function() {
-      setMessage("")
+    (async function () {
+      setMessage("");
       const response = await fetch(`/api/meeting/verifymeeting`, {
         method: "POST",
         credentials: "include",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           meeting_id: meetingId,
-          code: code
-        })
-      })
+          code: code,
+        }),
+      });
       const r = await response.json();
-      setMessage(r.message)
+      setMessage(r.message);
       if (r.ok) {
         setData([...data, r.data]);
       }
-    })()
+    })();
   }
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export default function Dashboard() {
         method: "GET",
         credentials: "include",
       });
-      const {meetings}= await response.json();
+      const { meetings } = await response.json();
       console.log(meetings);
       setData(meetings);
       setIsLoading(false);
@@ -126,24 +126,40 @@ export default function Dashboard() {
             }}
             title="Meetings Attended"
           />
-          <Card style={{maxWidth: 700, marginTop:50}}>
+          <Card style={{ maxWidth: 700, marginTop: 50 }}>
             <CardContent>
-              <Grid container spacing={2} justifyContent="space-between" alignItems="center">
+              <Grid
+                container
+                spacing={2}
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Grid item>
                   <FormControl style={{ minWidth: 200 }}>
                     <InputLabel>Meeting Name</InputLabel>
                     <Select value={meetingId} onChange={handleMeetingIdChange}>
-                      {openMeetings.map((m) => 
-                        <MenuItem value={m.id}>{m.name}</MenuItem>
-                      )}
+                      {openMeetings.map((m) => (
+                        <MenuItem value={m.id} key={m.id}>
+                          {m.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <TextField value={code} onChange={(e: any) => {setCode(e.target.value)}} label="Code" variant="outlined" />
+                  <TextField
+                    value={code}
+                    onChange={(e: any) => {
+                      setCode(e.target.value);
+                    }}
+                    label="Code"
+                    variant="outlined"
+                  />
                 </Grid>
                 <Grid item>
-                  <Button variant="contained" onClick={onSubmit}>Submit</Button>
+                  <Button variant="contained" onClick={onSubmit}>
+                    Submit
+                  </Button>
                 </Grid>
               </Grid>
               {message}
