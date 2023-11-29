@@ -95,6 +95,13 @@ export default function MenuAppBar() {
             >
               Dashboard
             </MenuItem>
+            <MenuItem
+              onClick={() => {
+                push("/meetings");
+              }}
+            >
+              Meetings
+            </MenuItem>
             {session?.user?.role?.includes("ADMIN") && (
               <MenuItem
                 onClick={() => {
@@ -116,7 +123,7 @@ export default function MenuAppBar() {
           </Menu>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            CSF Volunteering
+            FRC 7419 Attendance
           </Typography>
           <div>
             <Tooltip title="Account">

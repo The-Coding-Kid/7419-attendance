@@ -1,4 +1,11 @@
 
+interface Meeting{
+  id: string;
+  date: Date;
+  name: string;
+  hours: number;
+  code: string;
+}
 interface Hour {
   id: string;
   date: Date;
@@ -15,5 +22,6 @@ interface User {
   id: string;
   name: string;
   hours: Hour[];
+  meetings: Meeting[];
 }
 

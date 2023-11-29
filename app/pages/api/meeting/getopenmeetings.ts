@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
-import { hourSchema } from "@/lib/schemas";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,18 +9,21 @@ export default async function handler(
 ) {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session || !session.user) {
+  if (!session) {
     res.status(401).json({ message: "You must be logged in." });
     return;
   }
-
-  if (session.user.role == "USER")
-    return res.status(401).json({ message: "Not an Admin" });
-
-  const hours = await prisma.user.findMany({
-    include: {
-      hours: true,
+  const meetings = await prisma.meeting.findMany({
+    where: {
+      attendees: {
+        none: {
+          id: session.user!.id,
+        },
+      },
     },
-  });
-  res.json(hours);
+  })
+
+  // TODO: fix filter and remove code
+//   const filtered_meetings = meetings.filter((m) => m.date)
+  return res.status(200).json(meetings);
 }

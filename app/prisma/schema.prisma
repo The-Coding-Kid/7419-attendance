@@ -6,13 +6,13 @@ generator client {
 }
 
 datasource db {
-  // provider = "sqlite"
-  // url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 
-  provider          = "postgresql"
-  url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
+  // provider          = "postgresql"
+  // url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  // directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  // shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
 model User {
@@ -20,16 +20,24 @@ model User {
   email String  @unique
   name  String
   password String?
-  role  Role    @default(USER)
-  status String @default("")
-  hours Hour[]
+  role  String @default("USER")
+  hours ShopHour[]
 }
 
-model Hour {
+model Meeting {
+  id String @id @default(uuid())
+  name String
+  date DateTime
+  hours Decimal
+  code String
+  attendees User[]
+}
+
+model ShopHour {
   id                 String   @id @default(uuid())
   user               User     @relation(fields: [userId], references: [id])
   userId             String
-  hours Int
+  hours              Decimal
   date               DateTime
   name               String
   description        String
@@ -37,9 +45,8 @@ model Hour {
   subLeadName        String
   subLeadContact     String
   supervisor_contact String
-  reviewedBySubLead  Boolean @default(false)
-  status             String @default("")
-  approved Boolean @default(false)
+  approved           Boolean  @default(false)
+
 }
 
 model Session {
@@ -47,10 +54,4 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
-}
-
-enum Role {
-  USER
-  ADMIN
-  SITEADMIN
 }

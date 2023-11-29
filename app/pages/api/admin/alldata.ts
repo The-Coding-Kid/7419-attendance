@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
-import  prisma from "@/lib/prisma";
+import prisma from "@/lib/prisma";
+import { hourSchema } from "@/lib/schemas";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,18 +10,19 @@ export default async function handler(
 ) {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session) {
+  if (!session || !session.user) {
     res.status(401).json({ message: "You must be logged in." });
     return;
   }
 
-  if (req.method !== "DELETE") return res.status(400).json({ message: "Oops" });
+  if (session.user.role == "USER")
+    return res.status(401).json({ message: "Not an Admin" });
 
-  await prisma.shopHour.delete({
-    where: {
-      id: req.query.id as string,
+  const hours = await prisma.user.findMany({
+    include: {
+      hours: true,
+      meetings: true
     },
   });
-
-  return res.json({ message: "deleted" });
+  res.json(hours);
 }
