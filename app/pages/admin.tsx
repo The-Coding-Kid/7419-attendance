@@ -357,6 +357,7 @@ export default function Admin() {
                   </Typography>
                   <Typography sx={{ color: "text.secondary" }}>
                     {member.meetings.reduce(
+                      //@ts-ignore
                       (total, obj) => parseInt(obj.hours) + total,
                       0
                     )}{" "}
