@@ -22,7 +22,6 @@ model User {
   password String?
   role  String @default("USER")
   hours ShopHour[]
-  meetings Meeting[]
 }
 
 model Meeting {
@@ -43,8 +42,11 @@ model ShopHour {
   name               String
   description        String
   supervisor_name    String
+  subLeadName        String
+  subLeadContact     String
   supervisor_contact String
   approved           Boolean  @default(false)
+
 }
 
 model Session {
